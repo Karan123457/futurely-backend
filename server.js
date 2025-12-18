@@ -11,9 +11,12 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "https://your-frontend-name.vercel.app"
+    "https://www.futurely.in",
+    "https://futurely.in",
+    "http://localhost:3000"
   ],
-  credentials: true
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
