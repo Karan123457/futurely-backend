@@ -9,13 +9,16 @@ connectDB();
 
 const app = express();
 
+/* ✅ VERY IMPORTANT – handle preflight */
+app.options("*", cors());
+
 app.use(cors({
   origin: [
     "https://www.futurely.in",
     "https://futurely.in",
     "http://localhost:3000"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
