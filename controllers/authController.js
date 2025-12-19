@@ -82,6 +82,36 @@ export const loginUser = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+/* ================= CHANGE PASSWORD (PROTECTED) ================= */
+export const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    user.password = hashed;
+    await user.save();
+
+    return res.json({ message: "Password changed successfully" });
+
+  } catch (error) {
+    console.error("CHANGE PASSWORD ERROR:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 
 /* ================= PROFILE (PROTECTED) ================= */
 export const getProfile = async (req, res) => {
@@ -101,4 +131,5 @@ export const getProfile = async (req, res) => {
     console.error("PROFILE ERROR:", error);
     return res.status(500).json({ message: "Server error" });
   }
+  
 };
