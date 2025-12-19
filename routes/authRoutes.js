@@ -3,6 +3,7 @@ import {
   registerUser,
   loginUser,
   getProfile,
+  changePassword
 } from "../controllers/authController.js";
 import { getDashboard } from "../controllers/dashboardController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -15,5 +16,7 @@ router.post("/login", loginUser);
 // 🔐 Protected APIs
 router.get("/profile", authMiddleware, getProfile);
 router.get("/dashboard", authMiddleware, getDashboard); // ✅ FIXED
+router.put("/change-password", authMiddleware, changePassword);
+
 
 export default router;
