@@ -82,6 +82,72 @@ export const loginUser = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+/* =================== FORGOT PASSWORD =================== */
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 🔢 Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.resetOTP = otp;
+    user.resetOTPExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
+
+    // ❗ TEMP: show OTP in server log
+    console.log("RESET OTP:", otp);
+
+    return res.json({ message: "OTP sent to email" });
+
+  } catch (error) {
+    console.error("FORGOT PASSWORD ERROR:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+/* =================== RESET PASSWORD =================== */
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (
+      !user ||
+      user.resetOTP !== otp ||
+      user.resetOTPExpiry < Date.now()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashed;
+    user.resetOTP = null;
+    user.resetOTPExpiry = null;
+    await user.save();
+
+    return res.json({ message: "Password reset successful" });
+
+  } catch (error) {
+    console.error("RESET PASSWORD ERROR:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 /* ================= CHANGE PASSWORD (PROTECTED) ================= */
 export const changePassword = async (req, res) => {
   try {
