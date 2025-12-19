@@ -2,17 +2,18 @@ import express from "express";
 import {
   registerUser,
   loginUser,
-  getProfile
+  getProfile,
 } from "../controllers/authController.js";
+import { getDashboard } from "../controllers/dashboardController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Public routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// 🔐 Protected route (PRODUCTION READY)
+// 🔐 Protected APIs
 router.get("/profile", authMiddleware, getProfile);
+router.get("/dashboard", authMiddleware, getDashboard); // ✅ FIXED
 
 export default router;
