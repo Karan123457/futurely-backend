@@ -7,9 +7,10 @@ const userSchema = new mongoose.Schema({
 
   // 🔐 Forgot password
   resetOTP: String,
-  resetOTPExpire: Date,
+  resetOTPExpiry: Date,
 
   role: { type: String, default: "student" },
 }, { timestamps: true });
+
 
 export default mongoose.model("User", userSchema);
