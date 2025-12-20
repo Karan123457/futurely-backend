@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { sendOTPEmail } from "../utils/sendEmail.js";
+
 
 
 
@@ -111,9 +113,11 @@ export const forgotPassword = async (req, res) => {
     user.resetOTPExpiry = Date.now() + 10 * 60 * 1000;
     await user.save();
 
-    console.log("RESET OTP (DEV ONLY):", otp); // remove later
+    
+await sendOTPEmail(user.email, otp);
 
-    return res.json({ message: "OTP sent to email" });
+return res.json({ message: "OTP sent to email" });
+
   } catch (error) {
     console.error("FORGOT PASSWORD ERROR:", error);
     return res.status(500).json({ message: "Server error" });
