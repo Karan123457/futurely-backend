@@ -93,13 +93,22 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
+    // 🔒 Same response always
+    const genericMsg = {
+      message: "If the email exists, OTP has been sent"
+    };
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (!user) return res.json(genericMsg);
+
+    // ⏳ 60 sec resend protection
+    if (
+      user.resetOTPSentAt &&
+      Date.now() - user.resetOTPSentAt < 60 * 1000
+    ) {
+      return res.status(429).json({
+        message: "Please wait before requesting another OTP"
+      });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -111,26 +120,36 @@ export const forgotPassword = async (req, res) => {
 
     user.resetOTP = hashedOTP;
     user.resetOTPExpiry = Date.now() + 10 * 60 * 1000;
+    user.resetOTPSentAt = Date.now();
+    user.resetOTPAttempts = 0;
+
     await user.save();
 
-    
-await sendOTPEmail(user.email, otp);
+    await sendOTPEmail(user.email, otp);
 
-return res.json({ message: "OTP sent to email" });
-
+    return res.json(genericMsg);
   } catch (error) {
     console.error("FORGOT PASSWORD ERROR:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
 
+
 /* =================== RESET PASSWORD =================== */
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
 
-    if (!email || !otp || !newPassword) {
-      return res.status(400).json({ message: "All fields required" });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // 🚫 Max 5 attempts
+    if (user.resetOTPAttempts >= 5) {
+      return res.status(429).json({
+        message: "Too many attempts. Request a new OTP."
+      });
     }
 
     const hashedOTP = crypto
@@ -138,19 +157,21 @@ export const resetPassword = async (req, res) => {
       .update(otp)
       .digest("hex");
 
-    const user = await User.findOne({
-      email,
-      resetOTP: hashedOTP,
-      resetOTPExpiry: { $gt: Date.now() },
-    });
-
-    if (!user) {
+    if (
+      user.resetOTP !== hashedOTP ||
+      user.resetOTPExpiry < Date.now()
+    ) {
+      user.resetOTPAttempts += 1;
+      await user.save();
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
+    // ✅ SUCCESS
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetOTP = undefined;
     user.resetOTPExpiry = undefined;
+    user.resetOTPAttempts = 0;
+    user.resetOTPSentAt = undefined;
 
     await user.save();
 
@@ -160,6 +181,7 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 /* ================= CHANGE PASSWORD (PROTECTED) ================= */
@@ -211,5 +233,5 @@ export const getProfile = async (req, res) => {
     console.error("PROFILE ERROR:", error);
     return res.status(500).json({ message: "Server error" });
   }
-  
+
 };
