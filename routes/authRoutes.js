@@ -21,6 +21,8 @@ router.post("/reset-password", resetPassword);
 router.get("/profile", authMiddleware, getProfile);
 router.get("/dashboard", authMiddleware, getDashboard); // ✅ FIXED
 router.put("/change-password", authMiddleware, changePassword);
+router.get("/dashboard", authMiddleware, getDashboard);
+
 
 
 export default router;
