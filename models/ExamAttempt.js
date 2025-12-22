@@ -8,13 +8,21 @@ const examAttemptSchema = new mongoose.Schema({
   },
   subject: {
     type: String,
+    enum: ["physics"], // later add maths, chemistry
     required: true,
-    enum: ["physics"],
   },
-  questionId: { type: String, required: true },
-  year: { type: String },
-  isCorrect: { type: Boolean, required: true },
-  timeTaken: { type: Number },
+  questionId: {
+    type: String,
+    required: true,
+  },
+  isCorrect: {
+    type: Boolean,
+    required: true,
+  },
+  timeTaken: {
+    type: Number, // seconds
+    default: 0,
+  },
 }, { timestamps: true });
 
 export default mongoose.model("ExamAttempt", examAttemptSchema);
