@@ -94,7 +94,7 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     const genericMsg = {
-      message: "If the email exists, OTP has been sent"
+      message: "If the email is registered, an OTP has been sent."
     };
 
     const user = await User.findOne({ email });
@@ -239,3 +239,4 @@ export const getProfile = async (req, res) => {
   }
 
 };
+
