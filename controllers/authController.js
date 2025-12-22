@@ -93,13 +93,17 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // 🔒 Same response always
     const genericMsg = {
       message: "If the email exists, OTP has been sent"
     };
 
     const user = await User.findOne({ email });
-    if (!user) return res.json(genericMsg);
+
+    // ✅ INTERNAL LOG (ADMIN ONLY)
+    if (!user) {
+      console.log("🔐 Forgot password requested for non-existing email:", email);
+      return res.json(genericMsg);
+    }
 
     // ⏳ 60 sec resend protection
     if (
@@ -124,7 +128,6 @@ export const forgotPassword = async (req, res) => {
     user.resetOTPAttempts = 0;
 
     await user.save();
-
     await sendOTPEmail(user.email, otp);
 
     return res.json(genericMsg);
@@ -133,6 +136,7 @@ export const forgotPassword = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 /* =================== RESET PASSWORD =================== */
