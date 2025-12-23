@@ -7,15 +7,17 @@ export const savePhysicsAttempt = async (req, res) => {
       year,
       selectedIndex,
       correctIndex,
+      timeTaken, // ✅ ADD THIS
     } = req.body;
 
-    const attempt = await PhysicsAttempt.create({
+    await PhysicsAttempt.create({
       user: req.userId,
       questionId,
       year,
       selectedIndex,
       correctIndex,
       isCorrect: selectedIndex === correctIndex,
+      timeTaken: timeTaken || 0, // ✅ SAFE DEFAULT
     });
 
     return res.json({ success: true });
