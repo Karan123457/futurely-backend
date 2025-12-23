@@ -2,6 +2,8 @@ import PhysicsAttempt from "../models/PhysicsAttempt.js";
 
 export const savePhysicsAttempt = async (req, res) => {
   try {
+     console.log("PHYSICS ATTEMPT BODY:", req.body); // 👈 ADD THIS
+
     const {
       questionId,
       year,
