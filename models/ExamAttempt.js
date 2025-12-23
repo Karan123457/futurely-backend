@@ -8,10 +8,14 @@ const examAttemptSchema = new mongoose.Schema({
   },
   subject: {
     type: String,
-    enum: ["physics"], // later add maths, chemistry
+    enum: ["physics", "chemistry", "maths"],
     required: true,
   },
   questionId: {
+    type: String,
+    required: true,
+  },
+  year: {
     type: String,
     required: true,
   },
