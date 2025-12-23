@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import ExamAttempt from "../models/ExamAttempt.js";
+import PhysicsAttempt from "../models/PhysicsAttempt.js";
 
 export const getDashboard = async (req, res) => {
   try {
@@ -8,18 +8,24 @@ export const getDashboard = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const attempts = await ExamAttempt.find({
-      userId: req.userId,
-      subject: "physics",
+    const attempts = await PhysicsAttempt.find({
+      user: req.userId,
     });
 
     const attempted = attempts.length;
     const correct = attempts.filter(a => a.isCorrect).length;
     const wrong = attempted - correct;
-    const accuracy = attempted ? Math.round((correct / attempted) * 100) : 0;
+    const accuracy = attempted
+      ? Math.round((correct / attempted) * 100)
+      : 0;
 
-    const totalTime = attempts.reduce((s, a) => s + (a.timeTaken || 0), 0);
-    const avgTime = attempted ? Math.round(totalTime / attempted) : 0;
+    const totalTime = attempts.reduce(
+      (sum, a) => sum + (a.timeTaken || 0),
+      0
+    );
+    const avgTime = attempted
+      ? Math.round(totalTime / attempted)
+      : 0;
 
     return res.json({
       user,
