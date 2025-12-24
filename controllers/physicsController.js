@@ -5,22 +5,23 @@ export const savePhysicsAttempt = async (req, res) => {
      console.log("PHYSICS ATTEMPT BODY:", req.body); // 👈 ADD THIS
 
     const {
-      questionId,
-      year,
-      selectedIndex,
-      correctIndex,
-      timeTaken, // ✅ ADD THIS
-    } = req.body;
+  questionId,
+  year,
+  selectedIndex,
+  correctIndex,
+  timeTaken,
+} = req.body;
 
-    await PhysicsAttempt.create({
-      user: req.userId,
-      questionId,
-      year,
-      selectedIndex,
-      correctIndex,
-      isCorrect: selectedIndex === correctIndex,
-      timeTaken: timeTaken || 0, // ✅ SAFE DEFAULT
-    });
+await PhysicsAttempt.create({
+  user: req.userId,
+  questionId,
+  year,
+  selectedIndex,
+  correctIndex,
+  isCorrect: selectedIndex === correctIndex,
+  timeTaken,
+});
+
 
     return res.json({ success: true });
   } catch (error) {
