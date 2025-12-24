@@ -21,31 +21,22 @@ export const getPhysicsLeaderboard = async (req, res) => {
       { $unwind: "$user" },
       {
         $project: {
-          userId: "$user._id", // ✅ ADD THIS
+          userId: "$user._id",
           name: "$user.name",
           points: { $multiply: ["$correct", 4] },
         },
       },
-
       { $sort: { points: -1 } },
     ]);
 
     const leaderboard = data.map((u, i) => ({
       position: i + 1,
-      userId: u.userId.toString(), // ✅ ADD
+      userId: u.userId.toString(),
       name: u.name,
       points: u.points,
     }));
 
-
-    const myRank = leaderboard.find(
-      (u) => u.userId === req.userId.toString()
-    );
-
-    res.json({
-      leaderboard,
-      myRank: myRank || null,
-    });
+    res.json(leaderboard); // ✅ ARRAY ONLY
   } catch (error) {
     console.error("LEADERBOARD ERROR:", error);
     res.status(500).json({ message: "Server error" });
