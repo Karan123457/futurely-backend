@@ -21,18 +21,22 @@ export const getPhysicsLeaderboard = async (req, res) => {
       { $unwind: "$user" },
       {
         $project: {
+          userId: "$user._id", // ✅ ADD THIS
           name: "$user.name",
           points: { $multiply: ["$correct", 4] },
         },
       },
+
       { $sort: { points: -1 } },
     ]);
 
     const leaderboard = data.map((u, i) => ({
       position: i + 1,
+      userId: u.userId.toString(), // ✅ ADD
       name: u.name,
       points: u.points,
     }));
+
 
     res.json(leaderboard);
   } catch (error) {
