@@ -38,7 +38,14 @@ export const getPhysicsLeaderboard = async (req, res) => {
     }));
 
 
-    res.json(leaderboard);
+    const myRank = leaderboard.find(
+      (u) => u.userId === req.userId.toString()
+    );
+
+    res.json({
+      leaderboard,
+      myRank: myRank || null,
+    });
   } catch (error) {
     console.error("LEADERBOARD ERROR:", error);
     res.status(500).json({ message: "Server error" });
