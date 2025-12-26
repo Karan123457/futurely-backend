@@ -27,11 +27,11 @@ export const getOverallLeaderboard = async (req, res) => {
         $project: {
           userId: "$user._id",
           name: "$user.name",
-          points: { $multiply: ["$correct", 4] }, // 4 pts per correct
+          points: { $multiply: ["$correct", 4] },
         },
       },
 
-      { $sort: { points: -1 } },
+      { $sort: { points: -1, userId: 1 } }, // ✅ stable ranking
     ]);
 
     const leaderboard = data.map((u, i) => ({
@@ -41,7 +41,7 @@ export const getOverallLeaderboard = async (req, res) => {
       points: u.points,
     }));
 
-    res.json(leaderboard); // ✅ ARRAY ONLY
+    res.json(leaderboard);
   } catch (error) {
     console.error("OVERALL LEADERBOARD ERROR:", error);
     res.status(500).json({ message: "Server error" });
