@@ -38,10 +38,11 @@ export const registerUser = async (req, res) => {
     return res.status(201).json({
       token,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+  _id: user._id,   // ✅ STANDARDIZE
+  name: user.name,
+  email: user.email,
+},
+
     });
   } catch (error) {
     console.error("REGISTER ERROR:", error);
@@ -75,13 +76,14 @@ export const loginUser = async (req, res) => {
     );
 
     return res.json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-    });
+  token,
+  user: {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+  },
+});
+
   } catch (error) {
     console.error("LOGIN ERROR:", error);
     return res.status(500).json({ message: "Server error" });
@@ -228,14 +230,15 @@ export const getProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    });
+   return res.json({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+});
   } catch (error) {
     console.error("PROFILE ERROR:", error);
     return res.status(500).json({ message: "Server error" });
   }
 
 };
+
