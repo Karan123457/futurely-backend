@@ -4,8 +4,8 @@ export const savePhysicsAttempt = async (req, res) => {
   try {
     const { questionId, year, isCorrect, timeTaken, exam } = req.body;
 
-    if (!questionId) {
-      return res.status(400).json({ message: "Question ID required" });
+    if (!questionId || !exam) {
+      return res.status(400).json({ message: "Question ID and exam are required" });
     }
 
     await ExamAttempt.findOneAndUpdate(
@@ -17,7 +17,7 @@ export const savePhysicsAttempt = async (req, res) => {
     year,
     isCorrect,
     timeTaken,
-    exam: exam || "COMMON"
+    exam,
   },
   { upsert: true }
 );
@@ -25,7 +25,6 @@ export const savePhysicsAttempt = async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
-    console.error("SAVE PHYSICS ATTEMPT ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -43,7 +42,7 @@ export const saveChemistryAttempt = async (req, res) => {
         year,
         isCorrect,
         timeTaken,
-        exam: exam || "COMMON",   // 👈 store silently
+        exam,  // 👈 store silently
       },
       { upsert: true }
     );
@@ -67,7 +66,7 @@ export const saveMathsAttempt = async (req, res) => {
         year,
         isCorrect,
         timeTaken,
-        exam: exam || "COMMON",   // 👈 store silently
+        exam,
       },
       { upsert: true }
     );
