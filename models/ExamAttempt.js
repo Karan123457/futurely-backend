@@ -28,11 +28,17 @@ const examAttemptSchema = new mongoose.Schema({
     default: 0,
   },
   exam: {
-  type: String,
-  default: "COMMON",
-  index: true
-},
+    type: String,
+    default: "COMMON",
+    index: true
+  },
 
 }, { timestamps: true });
+
+examAttemptSchema.index(
+  { userId: 1, questionId: 1, exam: 1 },
+  { unique: true }
+);
+
 
 export default mongoose.model("ExamAttempt", examAttemptSchema);
