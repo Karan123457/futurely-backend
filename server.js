@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import examRoutes from "./routes/examRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
+import questionRoutes from "./routes/questionRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/exam", examRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/questions", questionRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -1,0 +1,44 @@
+[
+  {
+    "questionId": "2025-q1",
+    "exam": "D2D",
+    "subject": "Physics",
+    "year": 2025,
+    "text": "Newton's First Law is also known as?",
+    "options": [
+      "Law of inertia",
+      "Law of force",
+      "Law of gravity",
+      "Law of energy"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "questionId": "2025-q2",
+    "exam": "D2D",
+    "subject": "Physics",
+    "year": 2025,
+    "text": "SI unit of force is?",
+    "options": [
+      "Newton",
+      "Joule",
+      "Pascal",
+      "Watt"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "questionId": "2025-q3",
+    "exam": "D2D",
+    "subject": "Physics",
+    "year": 2025,
+    "text": "Which quantity has magnitude and direction?",
+    "options": [
+      "Scalar",
+      "Vector",
+      "Mass",
+      "Energy"
+    ],
+    "correctIndex": 1
+  }
+]
