@@ -23,7 +23,8 @@ export const getQuestions = async (req, res) => {
 
     const questions = await Question.find(filter)
       .sort({ year: -1, questionId: 1 })
-      .select("-correctIndex"); // ❗ hide answer from frontend
+      // REMOVE THIS LINE COMPLETELY FOR NOW
+
 
     res.json(questions);
   } catch (err) {
